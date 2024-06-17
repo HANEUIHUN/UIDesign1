@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Generator</title>
+    <style>
+        .sentence-box, .word-box {
+            border: 1px solid #000;
+            padding: 10px;
+            margin: 5px;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .word-box {
+            background-color: #f0f0f0;
+        }
+        .selected {
+            background-color: yellow;
+        }
+        .comment-section {
+            margin-top: 20px;
+        }
+        button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Split Paragraph into Sentences and Words</h1>
+    <textarea id="paragraph-input" rows="4" cols="50" placeholder="Enter your paragraph here..."></textarea>
+    <button id="split-paragraph">Split Paragraph</button>
+    <div id="sentences-container"></div>
+    <button id="generate-word" style="display: none;">Generate New Word</button>
+    <div id="new-word-container"></div>
+    <div class="comment-section" style="display: none;">
+        <textarea id="comment-input" rows="2" cols="50" placeholder="Enter your comment here..."></textarea>
+        <button id="save-comment">Save Comment</button>
+    </div>
+    <button id="go-to-storage">Go to Storage Page</button>
+
+    <script>
+        function splitParagraphIntoSentences(paragraph) {
+            const sentenceRegex = /[^.!?]*[.!?]/g;
+            return paragraph.match(sentenceRegex) || [];
+        }
+
+        function splitSentenceIntoWords(sentence) {
+            return sentence.match(/\b(\w+)\b/g) || [];
+        }
+
+        function createBox(content, className) {
+            const box = document.createElement("div");
+            box.className = className;
+            box.textContent = content;
+            return box;
+        }
+
+        function splitWordIntoSyllables(word) {
+            return word.split(/(?=[aeiou])/g);
+        }
+
+        function replaceRandomSyllable(coreWord, syllables) {
+            const coreSyllables = splitWordIntoSyllables(coreWord);
+            if (coreSyllables.length === 0 || syllables.length === 0) {
+                return coreWord;
+            }
+            const randomSyllable = syllables[Math.floor(Math.random() * syllables.length)];
+            const randomIndex = Math.floor(Math.random() * coreSyllables.length);
+            coreSyllables[randomIndex] = randomSyllable;
+            return coreSyllables.join('');
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const paragraphInput = document.getElementById("paragraph-input");
+            const splitButton = document.getElementById("split-paragraph");
+            const generateButton = document.getElementById("generate-word");
+            const sentencesContainer = document.getElementById("sentences-container");
+            const newWordContainer = document.getElementById("new-word-container");
+            const commentSection = document.querySelector(".comment-section");
+            const commentInput = document.getElementById("comment-input");
+            const saveCommentButton = document.getElementById("save-comment");
+            const goToStorageButton = document.getElementById("go-to-storage");
+            const selectedWords = new Set();
+
+            splitButton.addEventListener("click", () => {
+                const paragraph = paragraphInput.value;
+                const sentences = splitParagraphIntoSentences(paragraph);
+                sentencesContainer.innerHTML = "";
+                selectedWords.clear();
+
+                sentences.forEach(sentence => {
+                    const sentenceBox = createBox(sentence.trim(), "sentence-box");
+
+                    sentenceBox.addEventListener("click", () => {
+                        if (!sentenceBox.innerHTML.includes('<div')) {
+                            const words = splitSentenceIntoWords(sentence);
+                            sentenceBox.innerHTML = ""; // Clear the sentence text
+                            words.forEach(word => {
+                                const wordBox = createBox(word, "word-box");
+                                wordBox.addEventListener("click", (e) => {
+                                    e.stopPropagation(); // Prevent triggering the sentence click event
+                                    wordBox.classList.toggle("selected");
+                                    if (wordBox.classList.contains("selected")) {
+                                        selectedWords.add(word);
+                                    } else {
+                                        selectedWords.delete(word);
+                                    }
+                                });
+                                sentenceBox.appendChild(wordBox);
+                            });
+                        }
+                    });
+
+                    sentencesContainer.appendChild(sentenceBox);
+                });
+
+                generateButton.style.display = "inline-block";
+            });
+
+            generateButton.addEventListener("click", () => {
+                const selectedArray = Array.from(selectedWords);
+                if (selectedArray.length < 2) {
+                    newWordContainer.textContent = "Select at least two words.";
+                    return;
+                }
+
+                const coreWord = selectedArray[Math.floor(Math.random() * selectedArray.length)];
+                const otherSyllables = selectedArray
+                    .filter(word => word !== coreWord)
+                    .flatMap(word => splitWordIntoSyllables(word));
+
+                const newWord = replaceRandomSyllable(coreWord, otherSyllables);
+                newWordContainer.textContent = newWord;
+                commentSection.style.display = "block";
+            });
+
+            saveCommentButton.addEventListener("click", () => {
+                const newWord = newWordContainer.textContent;
+                const comment = commentInput.value;
+                const storedData = JSON.parse(localStorage.getItem('wordComments') || '[]');
+                storedData.push({ word: newWord, comment: comment });
+                localStorage.setItem('wordComments', JSON.stringify(storedData));
+                alert("Word and comment saved!");
+                commentSection.style.display = "none";
+                commentInput.value = "";
+            });
+
+            goToStorageButton.addEventListener("click", () => {
+                window.location.href = "storage.html";
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+

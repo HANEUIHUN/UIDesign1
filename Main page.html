@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="c:\Users\shout\Demo\html\UIDesign1\Chicagocss.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <Link href="c:\Users\shout\Demo\html\UIDesing1\vg5000-master\fonts\webfonts\font.css" rel="stylesheet">
+    <title>Word Generator</title>
+    <style>
+        body {
+            background-color: #000000;
+        }
+
+#container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+        h1 {
+            margin-bottom: -20px;
+            font-family: "VG5000";
+            font-size: 72px;
+            text-align: left;
+            color: #fff 
+            
+        }
+        
+        label {
+            font-family: "VG5000";
+            font-size: 36px;
+            font-weight: 400;
+            text-align: center;
+            color: #fff 
+
+        }
+        .sentence-box, .word-box {
+            border: 1px solid #ffffff; 
+            background-color: #ffffff;
+            padding: 10px;
+            margin: 5px;
+            display: inline-block;
+            cursor: pointer;
+            font-family: "VT323", monospace;
+            font-size: 20px;
+        }
+
+        #sentences-container{
+            display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+
+        }
+        .word-box {
+            
+                background-color: #000000;
+                color: #fff 
+            
+        }
+        .selected {
+            background-color: rgb(0, 0, 0);
+            box-shadow: 2px 2px 0px rgb(141, 141, 141);
+            text-shadow: 2px 2px 0px rgb(141, 141, 141);
+        }
+        .comment-section {
+            margin-top: 20px;
+            
+        }
+        #comment-input {
+            font-family: "VT323", monospace;
+            font-size: 20px;
+        }
+        button {
+            margin: 5px;
+            background-color: #fff;
+            font-family: "VT323", monospace;
+            font-size: 20px;
+            font-weight: 600;
+            
+        }
+        button :hover {
+            background-color: #989898;
+
+        }
+        #new-word-container {
+            color:#fff;
+            font-family: "VT323", monospace; 
+                font-size: 36px;
+        }
+    </style>
+</head>
+<body id="container">
+    <h1>DICTI-ONE</h1>
+    <div><label for="paragraph-input">Qaily-How can I describe my day?</label></div>
+      <div><textarea id="paragraph-input" rows="15" cols="70" placeholder=" 
+         ___________________
+        :' ,__________,  ':  `.    write about a interesting 
+        | '            `  |    `.    story of your day and 
+        | |  Hello     |  |      `.    make a new word that
+        | |            |  |        \     summarize your day!
+        | |  (Again!)  |  |         ]     It is hard to make
+        | |            |  |~~~~~~.  ]     -up a new word...
+        | `,__________,'  |\__O\_| ,'      howerver, this
+        |    _______      |      .`      programm can help
+        |<> [___=___](@)<>|    .'      you~!! have fun and 
+        ':________________/__.'     record your daily life!
+           (____________)                    /\_/\  /\_/\
+                                     meow~  ( o.o )( o.o )
+                                             > ^ <  > ^ <
+     
+         "
+         style="font-family: 'VT323', monospace; font-size: 20px;" ></textarea></div> 
+    <button id="split-paragraph">Split Paragraph</button>
+    <div id="sentences-container"></div>
+    <button id="generate-word" style="display: none;">Generate New Word</button>
+    <div id="new-word-container" ></div>
+    <div class="comment-section" style="display: none;">
+        <textarea id="comment-input" rows="5" cols="50" placeholder="
+        comments here |\__/,|   (`\
+                     .|o o  |_   ) )
+        -----------(((---(((---------
+         "></textarea>
+        <button id="save-comment">Save Comment</button>
+    </div>
+    <button id="go-to-storage">Go to Storage Page</button>
+
+    <script>
+        function splitParagraphIntoSentences(paragraph) {
+            const sentenceRegex = /[^.!?]*[.!?]/g;
+            return paragraph.match(sentenceRegex) || [];
+        }
+
+        function splitSentenceIntoWords(sentence) {
+            return sentence.match(/\b(\w+)\b/g) || [];
+        }
+
+        function createBox(content, className) {
+            const box = document.createElement("div");
+            box.className = className;
+            box.textContent = content;
+            return box;
+        }
+
+        function splitWordIntoSyllables(word) {
+            return word.split(/(?=[aeiou])/g);
+        }
+
+        function replaceRandomSyllable(coreWord, syllables) {
+            const coreSyllables = splitWordIntoSyllables(coreWord);
+            if (coreSyllables.length === 0 || syllables.length === 0) {
+                return coreWord;
+            }
+            const randomSyllable = syllables[Math.floor(Math.random() * syllables.length)];
+            const randomIndex = Math.floor(Math.random() * coreSyllables.length);
+            coreSyllables[randomIndex] = randomSyllable;
+            return coreSyllables.join('');
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const paragraphInput = document.getElementById("paragraph-input");
+            const splitButton = document.getElementById("split-paragraph");
+            const generateButton = document.getElementById("generate-word");
+            const sentencesContainer = document.getElementById("sentences-container");
+            const newWordContainer = document.getElementById("new-word-container");
+            const commentSection = document.querySelector(".comment-section");
+            const commentInput = document.getElementById("comment-input");
+            const saveCommentButton = document.getElementById("save-comment");
+            const goToStorageButton = document.getElementById("go-to-storage");
+            const selectedWords = new Set();
+
+            splitButton.addEventListener("click", () => {
+                const paragraph = paragraphInput.value;
+                const sentences = splitParagraphIntoSentences(paragraph);
+                sentencesContainer.innerHTML = "";
+                selectedWords.clear();
+
+                sentences.forEach(sentence => {
+                    const sentenceBox = createBox(sentence.trim(), "sentence-box");
+
+                    sentenceBox.addEventListener("click", () => {
+                        if (!sentenceBox.innerHTML.includes('<div')) {
+                            const words = splitSentenceIntoWords(sentence);
+                            sentenceBox.innerHTML = ""; // Clear the sentence text
+                            words.forEach(word => {
+                                const wordBox = createBox(word, "word-box");
+                                wordBox.addEventListener("click", (e) => {
+                                    e.stopPropagation(); // Prevent triggering the sentence click event
+                                    wordBox.classList.toggle("selected");
+                                    if (wordBox.classList.contains("selected")) {
+                                        selectedWords.add(word);
+                                    } else {
+                                        selectedWords.delete(word);
+                                    }
+                                });
+                                sentenceBox.appendChild(wordBox);
+                            });
+                        }
+                    });
+
+                    sentencesContainer.appendChild(sentenceBox);
+                });
+
+                generateButton.style.display = "inline-block";
+            });
+
+            generateButton.addEventListener("click", () => {
+                const selectedArray = Array.from(selectedWords);
+                if (selectedArray.length < 2) {
+                    newWordContainer.textContent = "Select at least two words.";
+                    return;
+                }
+
+                const coreWord = selectedArray[Math.floor(Math.random() * selectedArray.length)];
+                const otherSyllables = selectedArray
+                    .filter(word => word !== coreWord)
+                    .flatMap(word => splitWordIntoSyllables(word));
+
+                const newWord = replaceRandomSyllable(coreWord, otherSyllables);
+                newWordContainer.textContent = newWord;
+                commentSection.style.display = "block";
+            });
+
+            saveCommentButton.addEventListener("click", () => {
+                const newWord = newWordContainer.textContent;
+                const comment = commentInput.value;
+                const storedData = JSON.parse(localStorage.getItem('wordComments') || '[]');
+                storedData.push({ word: newWord, comment: comment }); // Saving word and comment as an object
+                localStorage.setItem('wordComments', JSON.stringify(storedData));
+                alert("Word and comment saved!");
+                commentSection.style.display = "none";
+                commentInput.value = "";
+            });
+
+            goToStorageButton.addEventListener("click", () => {
+                window.location.href = "Storage page.html"; // Redirecting to the storage page
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="c:\Users\shout\Demo\html\UIDesign1\ChicagoFLF.ttf" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <Link href="c:\Users\shout\Demo\html\UIDesign1\vg5000-master\fonts\webfonts\font.css" rel="stylesheet">
+    <title>Stored Words and Comments</title>
+    <style>
+        body { background-color: #000;
+
+        }
+        h1{
+            font-family: "VG5000", monospace;
+            font-size: 72px;
+            color:#fff;
+            margin-bottom: -20px;
+        }
+        .word-entry {
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+        .comment {
+            display: none;
+            margin-left: 20px;
+            font-style: italic;
+        }
+        .alphabet-button {
+            height: 50px;
+            margin: 5px;
+            padding: 7.5px 10px 5px 10px;
+            cursor: pointer;
+            font-family: "VG5000", monospace;
+            font-size: 30px;
+            background-color: #fff;
+            color: #000;
+            border: 4px solid #878787; 
+            text-shadow: 2px 2px 0px #575757;
+            
+        }
+        .alphabet-button:hover {
+            background-color: #000;
+            color: #fff;
+            border: 4px solid #fff;
+            text-shadow: 2px 2px 0px #878787;
+        }
+        
+        .words-container {
+            margin-top: 20px;
+                   }
+        .word-box {
+            margin-bottom: 10px;
+            position: relative;
+            
+        }
+        .word-button {
+            background-color: #ffffff;
+            border: 1px solid #000;
+            padding: 10px;
+            padding-top:7px;
+            margin-bottom: 10px;
+            text-align: left;
+            cursor: pointer;
+            font-family: "VT323", monospace;
+            font-size: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 50%;
+            text-shadow: 2px 2px 0px #989898;
+            box-shadow: 2px 2px 0px #989898;
+        }
+        .word-button:hover {
+                       box-shadow: 4px 4px 4px #989898;
+        }
+        .comment-box {
+            display: none;
+            margin-top: 5px;
+            font-family: "VT323", monospace;
+            font-style: italic;
+            font-size: 20px;
+            border: 2px double #525252;
+            padding: 5px;
+            background-color: #d1d1d1;
+        }
+        .selected-word {
+            background-color: rgb(0, 0, 0);
+            color: #fff;
+            border: 2px solid #fff;
+            text-shadow: 2px 2px 0px #686868;
+        }
+        .delete-button {
+            background-color: rgb(255, 255, 255);
+            border: none;
+            color: rgb(0, 0, 0);
+            font-family: "VT323", monospace;
+            font-size: 20px;
+            padding: 5px;
+            cursor: pointer;
+            display: none;
+        }
+        #go-to-main {
+            margin: 5px;
+            background-color: #fff;
+            font-family: "VT323", monospace;
+            font-size: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <h1>DICTI-ONE STORAGE</h1>
+    <div id="alphabet-buttons"></div>
+    <div class="words-container">
+        <div id="words-box"></div>
+    </div>
+    <button id="go-to-main">Go to Main Page</button>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const alphabetButtonsContainer = document.getElementById("alphabet-buttons");
+            const wordsBox = document.getElementById("words-box");
+            const goToMainButton = document.getElementById("go-to-main");
+            let selectedWordBox = null;
+
+            const storedData = JSON.parse(localStorage.getItem('wordComments') || '[]');
+
+            const alphabetMap = new Map();
+            storedData.forEach(entry => {
+                const firstLetter = entry.word.charAt(0).toUpperCase();
+                if (!alphabetMap.has(firstLetter)) {
+                    alphabetMap.set(firstLetter, []);
+                }
+                alphabetMap.get(firstLetter).push(entry);
+            });
+
+            alphabetMap.forEach((entries, alphabet) => {
+                const button = document.createElement("button");
+                button.textContent = alphabet;
+                button.className = "alphabet-button";
+                alphabetButtonsContainer.appendChild(button);
+
+                button.addEventListener("click", () => {
+                    const wordsHTML = entries.map(entry => {
+                        return `
+                            <div class="word-box" data-word="${entry.word}">
+                                <div class="word-button">${entry.word}<button class="delete-button">Delete</button></div>
+                                <div class="comment-box">${entry.comment}</div>
+                            </div>`;
+                    }).join('');
+
+                    wordsBox.innerHTML = wordsHTML;
+                    wordsBox.style.display = "block";
+
+                    const wordButtons = document.querySelectorAll(".word-button");
+                    wordButtons.forEach(button => {
+                        button.addEventListener("click", (event) => {
+                            const wordBox = event.target.closest(".word-box");
+                            const commentBox = wordBox.querySelector(".comment-box");
+                            if (commentBox.style.display === "none") {
+                                commentBox.style.display = "block";
+                            } else {
+                                commentBox.style.display = "none";
+                            }
+                            const deleteButton = wordBox.querySelector(".delete-button");
+                            if (deleteButton.style.display === "inline-block") {
+                                wordBox.querySelector(".word-button").classList.remove("selected-word");
+                                deleteButton.style.display = "none";
+                            }
+                        });
+
+                        button.addEventListener("dblclick", (event) => {
+                            event.stopPropagation(); // Prevent the single click event
+                            const wordBox = event.target.closest(".word-box");
+                            const wordButton = wordBox.querySelector(".word-button");
+                            wordButton.classList.toggle("selected-word");
+                            const deleteButton = wordBox.querySelector(".delete-button");
+                            deleteButton.style.display = deleteButton.style.display === "inline-block" ? "none" : "inline-block";
+                        });
+                    });
+
+                    const deleteButtons = document.querySelectorAll(".delete-button");
+                    deleteButtons.forEach(button => {
+                        button.addEventListener("click", (event) => {
+                            event.stopPropagation(); // Prevent the parent click event
+                            const wordBox = event.target.closest(".word-box");
+                            const word = wordBox.getAttribute('data-word');
+                            removeWord(word);
+                            wordBox.remove();
+                        });
+                    });
+                });
+            });
+
+            function removeWord(word) {
+                const storedData = JSON.parse(localStorage.getItem('wordComments') || '[]');
+                const newData = storedData.filter(entry => entry.word !== word);
+                localStorage.setItem('wordComments', JSON.stringify(newData));
+            }
+
+            goToMainButton.addEventListener("click", () => {
+                window.location.href = "Main page.html";
+            });
+        });
+    </script>
+</body>
+</html>

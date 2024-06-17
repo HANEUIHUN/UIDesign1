@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stored Words and Comments</title>
+    <style>
+        .word-entry {
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+        .comment {
+            display: none;
+            margin-left: 20px;
+            font-style: italic;
+        }
+        button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Stored Words and Comments</h1>
+    <div id="storage-container"></div>
+    <button id="go-to-main">Go to Main Page</button>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const storageContainer = document.getElementById("storage-container");
+            const goToMainButton = document.getElementById("go-to-main");
+            const storedData = JSON.parse(localStorage.getItem('wordComments') || '[]');
+
+            storedData.forEach(entry => {
+                const wordEntry = document.createElement("div");
+                wordEntry.className = "word-entry";
+                wordEntry.textContent = entry.word;
+
+                const comment = document.createElement("div");
+                comment.className = "comment";
+                comment.textContent = entry.comment;
+
+                wordEntry.addEventListener("click", () => {
+                    comment.style.display = comment.style.display === "none" ? "block" : "none";
+                });
+
+                storageContainer.appendChild(wordEntry);
+                storageContainer.appendChild(comment);
+            });
+
+            goToMainButton.addEventListener("click", () => {
+                window.location.href = "index.html";
+            });
+        });
+    </script>
+</body>
+</html>
+
