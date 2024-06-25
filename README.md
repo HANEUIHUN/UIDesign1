@@ -32,8 +32,15 @@
          </li>
          <li><a href="still life.html">still life</a>
          </li>
+         <li><a href="">Workshop</a>
+         </li>
          <li><a href="Main page.html">P2 Public Utility</a>
          </li>
+         <li><a href="">P1 Personal Utility_Figma</a>
+         </li>
+           <li><a href="">P1 Personal Utility_Drive</a>
+         </li>
+         
       </ul>
 
     </div>
