@@ -30,6 +30,8 @@
       <ul>
          <li><a href="ascii\exterior-Han Euihun.html">ascii town</a>
          </li>
+         <li><a href="still life.html">still life</a>
+         </li>
       </ul>
 
     </div>
