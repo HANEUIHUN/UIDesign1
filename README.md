@@ -23,7 +23,7 @@
       A short paragraph about you...</p>
       <ul>
         <li>My favorite food is kimchi soup</li>
-        <li>My favorite song is Cruel Summer</li>
+        <li>My favorite song is </li>
         <li>My favorite website is <a href="https://esdevlin.com/">esdevlin</a></li>
       </ul>
       <h2>exercise</h2>
@@ -36,4 +36,3 @@
   </div>
 </body>
 </html>
-
