@@ -32,13 +32,13 @@
          </li>
          <li><a href="still life.html">still life</a>
          </li>
-         <li><a href="">Workshop</a>
+         <li><a href="https://drive.google.com/drive/folders/1KV6TPJP6dEcFKP4u6YoO_MPPrkndyv6D?usp=sharing">Workshop</a>
          </li>
          <li><a href="Main page.html">P2 Public Utility</a>
          </li>
-         <li><a href="">P1 Personal Utility_Figma</a>
+         <li><a href="https://www.figma.com/design/QOWGqwAadb3F5S6EuBTVxc/EUIHUN-HAN-1?node-id=0-1">P1 Personal Utility_Figma</a>
          </li>
-           <li><a href="">P1 Personal Utility_Drive</a>
+           <li><a href="https://drive.google.com/drive/folders/1c235Uqnc72xv95MolbX_xQ9TfUKJJDV8?usp=sharing">P1 Personal Utility_Drive</a>
          </li>
          
       </ul>
