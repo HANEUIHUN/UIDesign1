@@ -1,6 +1,39 @@
-# UIDesign1
+!DOCTYPE html>
+<html>
+
 <head>
-	hi
+  <title>EUIHUN | UI Design Programming 1</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="assets/style.css"   />
 </head>
+ <style>
+  body {
+    background-color: rgb(156, 255, 255);
+  }
+  h1 {
+    font-family: 
+  }
+ </style>
+
 <body>
+  <div id="grid">
+    <div id="left-column" class="scroll">  
+      <h1>Euihun Han</h1>  
+      <p class="desc">
+      A short paragraph about you...</p>
+      <ul>
+        <li>My favorite food is kimchi soup</li>
+        <li>My favorite song is Cruel Summer</li>
+        <li>My favorite website is <a href="https://esdevlin.com/">esdevlin</a></li>
+      </ul>
+      <h2>exercise</h2>
+      <ul>
+         <li><a href="c:\Users\shout\Demo\html\UIDesign1\ascii\exterior-Han Euihun.html">ascii town</a>
+         </li>
+      </ul>
+
+    </div>
+  </div>
 </body>
+</html>
+
